@@ -1,0 +1,27 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: inventory-consumer
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      defaultBinder: rabbit
+      function:
+        definition: orders                 # your Consumer<OrderCreated> bean name
+      bindings:
+        orders-in-0:
+          destination: orders-exchange     # same exchange as producer
+          group: inventory                 # creates queue: inventory.orders-exchange
+          contentType: application/json
+      rabbit:
+        bindings:
+          orders-in-0:
+            consumer:
+              autoBindDlq: true            # optional: create DLQ automatically
+              republishToDlq: true         # include error headers on DLQ messages
+              # prefetch: 10               # tune concurrency/flow control

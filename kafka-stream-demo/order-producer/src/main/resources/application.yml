@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: order-producer
+  cloud:
+    stream:
+      bindings:
+        orders-out-0:
+          destination: orders-topic
+      kafka:
+        binder:
+          brokers: localhost:9092

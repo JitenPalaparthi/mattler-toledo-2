@@ -1,0 +1,22 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/JitenPalaparthi/mattler-toledo-config1.git
+          default-label: main     # branch name (e.g., master/main)
+          clone-on-start: true
+          search-paths: "{application}"  # optional: if each service has its own folder
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

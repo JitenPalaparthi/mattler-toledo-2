@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: inventory-consumer
+  cloud:
+    stream:
+      function:
+        definition: orders
+      bindings:
+        orders-in-0:
+          destination: orders-topic
+      kafka:
+        binder:
+          brokers: localhost:9092

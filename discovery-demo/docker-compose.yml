@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  discovery-server:
+    build:
+      context: .                 # <— repo root
+      dockerfile: discovery-server/Dockerfile
+    image: demo/discovery-server:1.0.0
+    ports: ["8761:8761"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+
+
+  inventory-service:
+    build: 
+      context: .                 # <— repo root
+      dockerfile: inventory-service/Dockerfile
+    image: demo/inventory-service:1.0.0
+    ports: ["8081:8081"]
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SERVER_PORT=8081
+
+  order-service:
+    build: 
+      context: .
+      dockerfile: order-service/Dockerfile
+
+    image: demo/order-service:1.0.0
+    ports: ["8082:8082"]
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      inventory-service:
+        condition: service_started
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SERVER_PORT=8082

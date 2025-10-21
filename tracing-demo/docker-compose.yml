@@ -1,0 +1,64 @@
+version: "3.9"
+services:
+  discovery-server:
+    build: { context: ., dockerfile: discovery-server/Dockerfile }
+    image: demo/discovery-server:1.0.0
+    ports: ["8761:8761"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+
+  inventory-service:
+    build: { context: ., dockerfile: inventory-service/Dockerfile }
+    image: demo/inventory-service:1.0.0
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SERVER_PORT=8081
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://otel-collector:4318/v1/traces
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      discovery-server: { condition: service_healthy }
+    ports: ["8081:8081"]
+
+  order-service:
+    build: { context: ., dockerfile: order-service/Dockerfile }
+    image: demo/order-service:1.0.0
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SERVER_PORT=8082
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://otel-collector:4318/v1/traces
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      discovery-server: { condition: service_healthy }
+      inventory-service: { condition: service_started }
+    ports: ["8082:8082"]
+
+  api-gateway:
+    build: { context: ., dockerfile: api-gateway/Dockerfile }
+    image: demo/api-gateway:1.0.0
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SERVER_PORT=8080
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://otel-collector:4318/v1/traces
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      discovery-server: { condition: service_healthy }
+      order-service: { condition: service_started }
+      inventory-service: { condition: service_started }
+    ports: ["8080:8080"]
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.97.0
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./otel-config.yaml:/etc/otel/config.yaml
+    ports: ["4318:4318"]
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.54
+    ports: ["16686:16686"]

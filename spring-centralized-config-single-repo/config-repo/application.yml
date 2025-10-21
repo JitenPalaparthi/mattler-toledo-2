@@ -1,0 +1,3 @@
+# Shared defaults for all apps/profiles
+app:
+  message: "Hello from shared application.yml (single-repo)"

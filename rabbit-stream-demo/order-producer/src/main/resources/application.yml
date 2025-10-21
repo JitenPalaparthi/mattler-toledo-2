@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: order-producer
+  rabbitmq:
+    host: localhost          # or localhost if running locally without Docker
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    stream:
+      defaultBinder: rabbit
+      bindings:
+        orders-out-0:
+          destination: orders-exchange     # Rabbit uses exchanges as “destination”
+          contentType: application/json    # JSON by default with your record types
+      rabbit:
+        bindings:
+          orders-out-0:
+            producer:
+              exchangeType: topic          # topic (default), direct, or fanout
