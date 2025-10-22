@@ -16,16 +16,16 @@ resilience4j:
     instances:
       inventory:
         slidingWindowType: COUNT_BASED
-        slidingWindowSize: 6
+        slidingWindowSize: 6 ## consider last 6 calls
         minimumNumberOfCalls: 4
-        failureRateThreshold: 50
+        failureRateThreshold: 50 # if it reaches 50% consider it as open
         automaticTransitionFromOpenToHalfOpenEnabled: true
         waitDurationInOpenState: 5s
         permittedNumberOfCallsInHalfOpenState: 2
   retry:
     instances:
       inventory:
-        maxAttempts: 3
+        maxAttempts: 3 # straight attempt + retries 
         waitDuration: 200ms
         retryExceptions:
           - org.springframework.web.client.HttpServerErrorException
