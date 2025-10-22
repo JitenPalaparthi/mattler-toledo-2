@@ -13,7 +13,6 @@ services:
       timeout: 3s
       retries: 20
 
-
   inventory-service:
     build: 
       context: .                 # <— repo root

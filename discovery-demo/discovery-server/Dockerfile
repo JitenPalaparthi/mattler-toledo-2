@@ -2,7 +2,7 @@
 FROM maven:3.9.9-eclipse-temurin-22-alpine AS build
 WORKDIR /app
 COPY pom.xml ..
-COPY ../pom.xml /app/..o
+COPY ../pom.xml /app/..
 COPY . .
 RUN mvn -q -pl discovery-server -am -DskipTests package spring-boot:repackage
 

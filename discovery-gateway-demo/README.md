@@ -22,7 +22,6 @@ mvn -q -pl api-gateway -am spring-boot:run
 
 ## Test through Gateway
 curl http://localhost:8080/api/inventory/hello
-curl http://localhost:8080/api/order/call-inventory
 
 ## Docker Compose
 docker compose up --build
