@@ -1,5 +1,0 @@
-# Overrides for 'inventory-service'
-inventory:
-  threshold: 42
-app:
-  message: "Hello from inventory-service.yml"
