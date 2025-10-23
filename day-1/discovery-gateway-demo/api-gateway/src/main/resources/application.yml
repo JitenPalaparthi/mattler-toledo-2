@@ -1,0 +1,29 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - RemoveRequestHeader=X-Api-Key
+        - RemoveResponseHeader=Server     
+      routes:
+        - id: inventory-route
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/inventory/**
+        - id: order-route
+          uri: lb://order-service
+          predicates:
+            - Path=/api/order/**
+    loadbalancer:
+      cache:
+        enabled: true
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://discovery-server:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+management.endpoints.web.exposure.include: health,info

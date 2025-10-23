@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS orders(
+  id SERIAL PRIMARY KEY,
+  customer VARCHAR(100) NOT NULL,
+  sku VARCHAR(50) NOT NULL,
+  qty INT NOT NULL,
+  price_cents INT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);

@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: mongodb-crud-demo
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://mongo:27017/demo}
+      database: ${MONGODB_DATABASE:demo}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
