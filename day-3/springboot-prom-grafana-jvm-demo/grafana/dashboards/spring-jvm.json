@@ -1,0 +1,121 @@
+{
+  "id": null,
+  "uid": "spring-jvm-demo",
+  "title": "Spring Boot JVM + HTTP + GC",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "type": "graph",
+      "title": "HTTP requests per second by URI",
+      "targets": [
+        {
+          "expr": "sum by (uri,method,status) (rate(http_server_requests_seconds_count[5m]))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "stat",
+      "title": "GC pause avg (last 5m)",
+      "targets": [
+        {
+          "expr": "rate(jvm_gc_pause_seconds_sum[5m]) / rate(jvm_gc_pause_seconds_count[5m])",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center"
+      }
+    },
+    {
+      "type": "graph",
+      "title": "GC pauses rate (events/s)",
+      "targets": [
+        {
+          "expr": "sum(rate(jvm_gc_pause_seconds_count[5m]))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      }
+    },
+    {
+      "type": "graph",
+      "title": "Heap memory used (bytes)",
+      "targets": [
+        {
+          "expr": "sum by (area) (jvm_memory_used_bytes{area=\"heap\"})",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 12,
+        "y": 4
+      }
+    },
+    {
+      "type": "graph",
+      "title": "Process CPU usage",
+      "targets": [
+        {
+          "expr": "process_cpu_usage",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 20,
+        "y": 4
+      }
+    },
+    {
+      "type": "graph",
+      "title": "Custom hello counter",
+      "targets": [
+        {
+          "expr": "demo_hello_requests_total",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      }
+    }
+  ]
+}
