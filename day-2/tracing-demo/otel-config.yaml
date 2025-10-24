@@ -1,20 +1,46 @@
+# receivers:
+#   otlp:
+#     protocols:
+#       http: {}        # apps -> collector via OTLP/HTTP (4318)
+# exporters:
+#   otlp:               # collector -> Jaeger via OTLP/gRPC (4317)
+#     endpoint: zipkin:9414
+#     tls:
+#       insecure: true
+    
+
+# processors:
+#   batch: {}
+# service:
+#   pipelines:
+#     traces:
+#       receivers: [otlp]
+#       processors: [batch]
+#       exporters: [otlp]
+
 receivers:
   otlp:
     protocols:
       http: {}        # apps -> collector via OTLP/HTTP (4318)
+      grpc: {}        # (optional) if apps use OTLP/gRPC
 
 exporters:
-  otlp:               # collector -> Jaeger via OTLP/gRPC (4317)
+  otlp/jaeger:
     endpoint: jaeger:4317
     tls:
       insecure: true
 
-processors:
-  batch: {}
+  otlp/zipkin:
+    endpoint: zipkin:4318
+    tls:
+      insecure: true
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp]
+      exporters: [otlp/jaeger, otlp/zipkin]
+
+processors:
+  batch: {}

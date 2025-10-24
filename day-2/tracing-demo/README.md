@@ -16,4 +16,3 @@ Run (Docker):
 - Open Jaeger: http://localhost:16686
 - Try:
   curl http://localhost:8080/api/order/call-inventory
-  curl http://localhost:8080/api/inventory/slow?delayMs=750

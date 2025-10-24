@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   discovery-server:
     build: { context: ., dockerfile: discovery-server/Dockerfile }
@@ -62,3 +61,10 @@ services:
   jaeger:
     image: jaegertracing/all-in-one:1.54
     ports: ["16686:16686"]
+
+  zipkin:
+    image: ghcr.io/openzipkin-contrib/zipkin-otel:latest
+    ports:
+      - "9411:9411"  # Zipkin UI (optional if you want to browse)
+      - "14317:4317"  # OTLP gRPC ingest
+      - "14318:4318"  # OTLP HTTP ingest
